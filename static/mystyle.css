@@ -1,0 +1,46 @@
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+img {
+    width: 100%;
+}
+
+.navbar {
+    margin-bottom: 20px;
+}
+
+.hr-recipes {
+    border: 0;
+    height: 1px;
+    background: #333 linear-gradient(to right, #ccc, #333, #ccc);
+}
+
+@media only screen and (min-width: 767px) {
+    .bottom-align-text {
+        position: absolute;
+        bottom: 0;
+    }
+}
+
+
+@media only screen and (max-width: 767px) {
+    img {
+        width: 100%;
+        height: 80%;
+    }
+
+    #image-center {
+        /* !!! */
+        margin-bottom: -50px;
+        /*position: relative;*/
+        width: calc(100vw - 10px);
+        margin-left: calc(-50vw + 5px);
+        left: 50%;
+    }
+
+    p {
+        font-size: 18px;
+    }
+}
