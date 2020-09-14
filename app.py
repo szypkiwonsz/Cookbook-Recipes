@@ -22,7 +22,7 @@ def recipe_list():
 def recipe_add():
     form = RecipeAddForm()
     if form.validate_on_submit():
-        return redirect('/recipes')
+        return redirect('/recipes/')
     return render_template('recipe_add.html', form=form)
 
 
