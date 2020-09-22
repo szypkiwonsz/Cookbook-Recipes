@@ -33,7 +33,7 @@ class Recipe:
     def add_new(self, data, files):
         request = self.post(data)
         id_post_recipe = request.json()['id']
-        self.patch(files, id_post_recipe)
+        self.patch(id_post_recipe, files)
 
     @staticmethod
     def get_form_data(form, image_path):
