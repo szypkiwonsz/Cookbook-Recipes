@@ -41,7 +41,7 @@ class StepAddForm(MyForm):
 
 class RecipeAddForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(min=3, max=50)])
-    image = FileField('Image', filters=[lambda x: x or "media/default.png"])
+    image = FileField('Image', filters=[lambda x: x or "app/media/default.png"])
     description = StringField('Description', validators=[DataRequired(), Length(min=3, max=500)])
     ingredients = FieldList(FormField(IngredientAddForm), min_entries=1)
     steps = FieldList(FormField(StepAddForm), min_entries=1)

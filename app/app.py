@@ -15,7 +15,7 @@ images = UploadSet('images', IMAGES)
 configure_uploads(app, images)
 
 recipe = Recipe(url_get_post='https://recipes-cookbook-api.herokuapp.com/api/recipes/',
-                api_token='API_TOKEN')
+                api_token='7863a78eadb90301bb98c7d4d06cbe497d92b756')
 
 
 @app.route('/recipes/')
