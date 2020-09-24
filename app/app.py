@@ -20,7 +20,8 @@ recipe = Recipe(url_get_post='https://recipes-cookbook-api.herokuapp.com/api/rec
 
 @app.route('/recipes/')
 def recipe_list():
-    recipes = recipe.get()
+    response = recipe.get()
+    recipes = response.json()
     return render_template('recipe_list.html', recipes=recipes)
 
 
@@ -28,9 +29,9 @@ def recipe_list():
 def recipe_add():
     form = RecipeAddForm()
     if form.validate_on_submit():
-        if form.image.data != 'media/default.png':
+        if form.image.data != 'app/media/default.png':
             image = images.save(form.image.data)
-            image_path = f'media/recipe_images/{image}'
+            image_path = f'app/media/recipe_images/{image}'
         else:
             image_path = form.image.data
         recipe_data, recipe_files = recipe.get_form_data(form, image_path)

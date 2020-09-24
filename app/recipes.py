@@ -10,9 +10,8 @@ class Recipe:
         self.api_token = api_token
 
     def get(self):
-        request = requests.get(self.url_get_post)
-        recipes = request.json()
-        return recipes
+        response = requests.get(self.url_get_post)
+        return response
 
     def post(self, payload):
         headers = {
@@ -20,19 +19,24 @@ class Recipe:
             'Accept': 'application/json',
             'Authorization': f'Token {self.api_token}'
         }
-        request = requests.post(self.url_get_post, headers=headers, json=payload)
-        return request
+        response = requests.post(self.url_get_post, headers=headers, json=payload)
+        return response
 
     def patch(self, recipe_id, files):
         headers = {
             'Authorization': f'Token {self.api_token}'
         }
         url_patch = f'{self.url_get_post}{recipe_id}/'
-        requests.patch(url_patch, files=files, headers=headers)
+        response = requests.patch(url_patch, files=files, headers=headers)
+        return response
+
+    @staticmethod
+    def get_id_post(response_post):
+        return response_post.json()['id']
 
     def add_new(self, data, files):
-        request = self.post(data)
-        id_post_recipe = request.json()['id']
+        response = self.post(data)
+        id_post_recipe = self.get_id_post(response)
         self.patch(id_post_recipe, files)
 
     @staticmethod
