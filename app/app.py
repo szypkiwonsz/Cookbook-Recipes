@@ -10,13 +10,13 @@ from utils import Paginate
 app = Flask(__name__)
 SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
-app.config['UPLOADED_IMAGES_DEST'] = 'media/recipe_images'
+app.config['UPLOADED_IMAGES_DEST'] = 'app/media/recipe_images'
 
 images = UploadSet('images', IMAGES)
 configure_uploads(app, images)
 
 recipe = Recipe(url_get_post='https://recipes-cookbook-api.herokuapp.com/api/recipes/',
-                api_token='7863a78eadb90301bb98c7d4d06cbe497d92b756')
+                api_token='01047978a164aa3c29f1ff54e67c75093c0c8e34')
 
 
 @app.route('/recipes/')
