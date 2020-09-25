@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>Add Recipe</title>
+{% endblock head %}
+{% block content %}
+    {% if form.errors %}
+        <ul class="errors">
+            {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+                {% for error in field_errors %}
+                    <li>{{ form[field_name].label }}: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        {{ form.name.label }} {{ form.name(class_="form-control") }}
+        <div class="mt-2" data-toggle="fieldset" id="ingredients-fieldset">
+            <button class="btn btn-success" type="button" data-toggle="fieldset-add-row"
+                    data-target="#ingredients-fieldset">+
+            </button>
+            <span>Add ingredient</span>
+            <ul id="ingredients">
+                {% for ingredient in form.ingredients %}
+                    <div data-toggle="fieldset-entry">
+                        <input type="hidden" id="ingredients-{{ loop.index0 }}"
+                               name="ingredients-{{ loop.index0 }}">
+                        <div class="form-row">
+                            <div class="col">
+                                {{ ingredient.unit(class_="form-control",id="ingredient-unit") }}</div>
+                            <div class="col">
+                                {{ ingredient.amount(class_="form-control", id="ingredient-amount",
+                                placeholder="Amount") }}
+                            </div>
+                            <div class="col">
+                                {% for food in ingredient.food %}
+                                    {{ food(class_="form-control", id="ingredient-food", placeholder="Name") }}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <button class="btn btn-danger mt-2" type="button" data-toggle="fieldset-remove-row"
+                                id="ingredients-{{ loop.index0 }}-remove">-
+                        </button>
+                    </div>
+                {% endfor %}
+            </ul>
+        </div>
+        <div data-toggle="fieldset" id="steps-fieldset">
+            <button class="btn btn-success" type="button" data-toggle="fieldset-add-row" data-target="#steps-fieldset">
+                +
+            </button>
+            <label>Add step</label>
+            <ul id="steps">
+                {% for step in form.steps %}
+                    <div data-toggle="fieldset-entry">
+                        <input type="hidden" id="steps-{{ loop.index0 }}" name="steps-{{ loop.index0 }}">
+                        {{ step.instruction(class_="form-control", id="step-instruction", placeholder="Instruction") }}
+                        <button class="btn btn-danger mt-2" type="button" data-toggle="fieldset-remove-row"
+                                id="steps-{{ loop.index0 }}-remove">-
+                        </button>
+                    </div>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="form-group">
+            {{ form.image.label }}
+            {{ form.image.value }}
+            <div class="custom-file">
+                {{ form.image(class_="custom-file-input", id="validatedCustomFile") }}
+                <label class="custom-file-label" for="validatedCustomFile">Choose file...</label>
+                {#    <div class="invalid-feedback">Example invalid custom file feedback</div>#}
+            </div>
+        </div>
+        <div class="form-group">
+            {{ form.description.label }} {{ form.description(class_="form-control", id="description") }}
+        </div>
+        <div class="form-group">
+            {{ form.portions.label }} {{ form.portions(class_="form-control", id="portions") }}
+        </div>
+        <div class="form-group">
+            {{ form.preparation_time.label }} {{ form.preparation_time(class_="form-control", id="preparation-time") }}
+        </div>
+        <div class="form-group">
+            {{ form.difficulty.label }} {{ form.difficulty(class_="form-control", id="difficulty") }}
+        </div>
+        <button class="btn btn-primary mt-2" type="submit">Add recipe</button>
+    </form>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/fieldset.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/custom_file_label.js') }}"></script>
+{% endblock content %}
