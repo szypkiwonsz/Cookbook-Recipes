@@ -5,24 +5,29 @@ from flask_uploads import configure_uploads, IMAGES, UploadSet
 
 from forms import RecipeAddForm
 from recipes import Recipe
+from utils import Paginate
 
 app = Flask(__name__)
 SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
-app.config['UPLOADED_IMAGES_DEST'] = 'media/recipe_images'
+app.config['UPLOADED_IMAGES_DEST'] = 'app/media/recipe_images'
 
 images = UploadSet('images', IMAGES)
 configure_uploads(app, images)
 
 recipe = Recipe(url_get_post='https://recipes-cookbook-api.herokuapp.com/api/recipes/',
-                api_token='7863a78eadb90301bb98c7d4d06cbe497d92b756')
+                api_token='01047978a164aa3c29f1ff54e67c75093c0c8e34')
 
 
 @app.route('/recipes/')
 def recipe_list():
     response = recipe.get()
     recipes = response.json()
-    return render_template('recipe_list.html', recipes=recipes)
+    paginate = Paginate(recipes, 'bootstrap4')
+    pagination_recipes = paginate.get_data()
+    pagination = paginate.pagination()
+    return render_template('recipe_list.html', recipes=pagination_recipes, page=paginate.page,
+                           per_page=paginate.per_page, pagination=pagination)
 
 
 @app.route('/recipes/add/', methods=['GET', 'POST'])
