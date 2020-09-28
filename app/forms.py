@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, FileField, FieldList, FormField, IntegerField, SelectField
+from wtforms import StringField, FileField, FieldList, FormField, IntegerField, SelectField, PasswordField
 from wtforms.validators import Length, DataRequired
 
 
@@ -48,3 +48,8 @@ class RecipeAddForm(FlaskForm):
     portions = IntegerField('Portions', validators=[DataRequired()])
     preparation_time = IntegerField('Preparation time', validators=[DataRequired()])
     difficulty = SelectField('Difficulty', validators=[DataRequired()], choices=['EASY', 'MEDIUM', 'HARD'])
+
+
+class LoginForm(FlaskForm):
+    username = StringField('username', validators=[DataRequired()])
+    password = PasswordField('password', validators=[DataRequired()])
