@@ -2,7 +2,7 @@ import unittest
 
 from flask_testing import TestCase
 
-from app.app import app
+from app import app
 
 
 class TestRecipesRoutes(TestCase):
@@ -13,23 +13,30 @@ class TestRecipesRoutes(TestCase):
         app.config['DEBUG'] = False
         return app
 
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
     def test_recipe_list_url(self):
         response = self.client.get('/recipes/')
         self.assertEqual(response.status_code, 200)
         self.assert_template_used('recipe_list.html')
         # self.assert_context()
 
-    def test_recipe_add_url(self):
-        response = self.client.get('recipes/add/')
-        self.assertEqual(response.status_code, 200)
-        self.assert_template_used('recipe_add.html')
+    def test_recipe_add_url_not_logged(self):
+        response = self.client.get('/recipes/add/')
+        self.assertEqual(response.status_code, 302)
+        # self.assert_template_used('login.html')
         # self.assert_context()
+
+    def test_recipe_add_url(self):
+        pass
+
+    def test_login_url(self):
+        response = self.client.get('/login/')
+        self.assertEqual(response.status_code, 200)
+        self.assert_template_used('login.html')
+
+    def test_logout_url(self):
+        response = self.client.get('/logout/')
+        self.assertEqual(response.status_code, 200)
+        self.assert_template_used('logout.html')
 
 
 if __name__ == "__main__":
