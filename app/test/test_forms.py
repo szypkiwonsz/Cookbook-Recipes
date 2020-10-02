@@ -3,7 +3,7 @@ import unittest
 from flask_testing import TestCase
 
 from config import app
-from forms import RecipeAddForm
+from forms import RecipeAddForm, LoginForm
 
 
 class TestRecipeForms(TestCase):
@@ -41,10 +41,16 @@ class TestRecipeForms(TestCase):
         self.assertEqual(len(form.errors), 7)
 
     def test_login_form(self):
-        pass
+        form = LoginForm(data={
+            'username': 'username',
+            'password': 'password'
+        })
+        self.assertTrue(form.validate())
 
     def test_login_form_no_data(self):
-        pass
+        form = LoginForm(data={})
+        self.assertFalse(form.validate())
+        self.assertEqual(len(form.errors), 2)
 
 
 if __name__ == "__main__":
