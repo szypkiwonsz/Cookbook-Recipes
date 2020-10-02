@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block nav_login %}active{% endblock %}
+{% block head %}
+    <title>Login</title>
+{% endblock head %}
+{% block content %}
+    {% if form.errors %}
+        <ul class="errors">
+            {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+                {% for error in field_errors %}
+                    <li>{{ form[field_name].label }}: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <form method="post">
+        {{ form.hidden_tag() }}
+        <input type="hidden" value="{{ request.args.get('next', '') }}"/>
+        {{ form.username }}
+        {{ form.password }}
+        <button class="btn btn-primary mt-2" type="submit">Login</button>
+    </form>
+{% endblock content %}
