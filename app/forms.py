@@ -4,18 +4,14 @@ from wtforms.validators import Length, DataRequired
 
 
 class MyForm(FlaskForm):
-    """
-    Class with disabled CSRF token. Used for subforms of FieldList.
-    """
+    """Class with disabled CSRF token. Used for subforms of FieldList."""
 
     class Meta:
         csrf = False
 
 
 class NoLabelMixin(object):
-    """
-    Class setting labels in form fields as empty string.
-    """
+    """Class setting labels in form fields as empty string."""
 
     def __init__(self, *args, **kwargs):
         super(NoLabelMixin, self).__init__(*args, **kwargs)
