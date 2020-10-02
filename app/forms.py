@@ -1,21 +1,17 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, FileField, FieldList, FormField, IntegerField, SelectField
+from wtforms import StringField, FileField, FieldList, FormField, IntegerField, SelectField, PasswordField
 from wtforms.validators import Length, DataRequired
 
 
 class MyForm(FlaskForm):
-    """
-    Class with disabled CSRF token. Used for subforms of FieldList.
-    """
+    """Class with disabled CSRF token. Used for subforms of FieldList."""
 
     class Meta:
         csrf = False
 
 
 class NoLabelMixin(object):
-    """
-    Class setting labels in form fields as empty string.
-    """
+    """Class setting labels in form fields as empty string."""
 
     def __init__(self, *args, **kwargs):
         super(NoLabelMixin, self).__init__(*args, **kwargs)
@@ -48,3 +44,8 @@ class RecipeAddForm(FlaskForm):
     portions = IntegerField('Portions', validators=[DataRequired()])
     preparation_time = IntegerField('Preparation time', validators=[DataRequired()])
     difficulty = SelectField('Difficulty', validators=[DataRequired()], choices=['EASY', 'MEDIUM', 'HARD'])
+
+
+class LoginForm(FlaskForm):
+    username = StringField('username', validators=[DataRequired()])
+    password = PasswordField('password', validators=[DataRequired()])

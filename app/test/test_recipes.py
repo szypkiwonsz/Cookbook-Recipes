@@ -97,3 +97,7 @@ class TestRecipeClass(unittest.TestCase):
 
     def test_get_form_data(self):
         pass
+
+
+if __name__ == "__main__":
+    unittest.main()
