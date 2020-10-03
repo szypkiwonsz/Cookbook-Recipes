@@ -18,14 +18,14 @@ def before_request():
 
 
 @app.route('/recipes/')
-def recipe_list():
+def recipe_list_all():
     recipe = Recipe(url_get_post='https://recipes-cookbook-api.herokuapp.com/api/recipes/')
     response = recipe.get()
     recipes = response.json()
     paginate = Paginate(recipes, 'bootstrap4')
     pagination_recipes = paginate.get_data()
     pagination = paginate.pagination()
-    return render_template('recipe_list.html', recipes=pagination_recipes, page=paginate.page,
+    return render_template('recipe_list_all.html', recipes=pagination_recipes, page=paginate.page,
                            per_page=paginate.per_page, pagination=pagination)
 
 
