@@ -38,6 +38,11 @@ class TestRecipesRoutes(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assert_template_used('logout.html')
 
+    def test_register_url(self):
+        response = self.client.get('/register/')
+        self.assertEqual(response.status_code, 200)
+        self.assert_template_used('register.html')
+
 
 if __name__ == "__main__":
     unittest.main()
