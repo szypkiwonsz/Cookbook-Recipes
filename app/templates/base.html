@@ -21,7 +21,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item {% block nav_recipe_list %}{% endblock %}">
-                    <a class="nav-link" href="{{ url_for('recipe_list') }}">Recipes</a>
+                    <a class="nav-link" href="{{ url_for('recipe_list_all') }}">Recipes</a>
                 </li>
                 <li class="nav-item {% block nav_recipe_add %}{% endblock %}">
                     <a class="nav-link" href="{{ url_for('recipe_add') }}">Add recipe</a>
@@ -36,7 +36,7 @@
                     <li class="nav-item {% block nav_login %}{% endblock %}">
                         <a class="nav-link float-right" href="{{ url_for('login') }}">Login</a>
                     </li>
-                    <li class="nav-item" {% block nav_register %}{% endblock %}>
+                    <li class="nav-item {% block nav_register %}{% endblock %}">
                         <a class="nav-link float-right" href="{{ url_for('register') }}">Register</a>
                     </li>
                 {% endif %}
