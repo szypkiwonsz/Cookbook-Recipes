@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block nav_register %}active{% endblock %}
+{% block head %}
+    <title>Register</title>
+{% endblock head %}
+{% block content %}
+    {% if form.errors %}
+        <ul class="errors">
+            {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+                {% for error in field_errors %}
+                    <li>{{ form[field_name].label }}: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <form method="post">
+        {{ form.hidden_tag() }}
+        {{ form.username }}
+        {{ form.email }}
+        {{ form.password }}
+        {{ form.password2 }}
+        <button class="btn btn-primary mt-2" type="submit">Register</button>
+    </form>
+{% endblock content %}
