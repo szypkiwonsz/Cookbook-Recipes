@@ -3,7 +3,7 @@ from flask import render_template, redirect, session, g, request, flash
 
 from config import app, images
 from decorators import login_required
-from forms import RecipeAddForm, LoginForm
+from forms import RecipeAddForm, LoginForm, RegisterForm
 from recipes import Recipe
 from utils import Paginate
 
@@ -71,6 +71,22 @@ def logout():
         session['user_token'] = None
         return redirect('/recipes/')
     return render_template('logout.html')
+
+
+@app.route('/register/', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        payload = {
+            'username': form.username.data,
+            'email': form.email.data,
+            'password': form.password.data,
+            'password2': form.password2.data
+        }
+        requests.post('https://recipes-cookbook-api.herokuapp.com/api/users/', json=payload)
+        flash('The account has been successfully created.')
+        return redirect('/login/')
+    return render_template('register.html', form=form)
 
 
 if __name__ == '__main__':
