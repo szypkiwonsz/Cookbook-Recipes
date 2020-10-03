@@ -16,7 +16,7 @@ class TestRecipesRoutes(TestCase):
     def test_recipe_list_url(self):
         response = self.client.get('/recipes/')
         self.assertEqual(response.status_code, 200)
-        self.assert_template_used('recipe_list.html')
+        self.assert_template_used('recipe_list_all.html')
         # self.assert_context()
 
     def test_recipe_add_url_not_logged(self):
