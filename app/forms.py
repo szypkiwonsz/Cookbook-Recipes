@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, FileField, FieldList, FormField, IntegerField, SelectField, PasswordField
-from wtforms.validators import Length, DataRequired
+from wtforms.fields.html5 import EmailField
+from wtforms.validators import Length, DataRequired, Email, EqualTo
 
 
 class MyForm(FlaskForm):
@@ -47,5 +48,13 @@ class RecipeAddForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
-    username = StringField('username', validators=[DataRequired()])
-    password = PasswordField('password', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+
+
+class RegisterForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=3, max=150)])
+    email = EmailField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired(), EqualTo(
+        'password2', message='Passwords must match.')])
+    password2 = PasswordField('Password confirmation', validators=[DataRequired()])
