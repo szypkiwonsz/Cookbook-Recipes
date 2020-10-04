@@ -12,20 +12,36 @@ from utils import Paginate
 def before_request():
     if 'user_token' in session:
         user_token = session['user_token']
+        username = session['username']
         g.user_token = user_token
+        g.username = username
     else:
         g.user_token = None
+        g.username = None
 
 
 @app.route('/recipes/')
-def recipe_list():
+def recipe_list_all():
     recipe = Recipe(url_get_post='https://recipes-cookbook-api.herokuapp.com/api/recipes/')
     response = recipe.get()
     recipes = response.json()
     paginate = Paginate(recipes, 'bootstrap4')
     pagination_recipes = paginate.get_data()
     pagination = paginate.pagination()
-    return render_template('recipe_list.html', recipes=pagination_recipes, page=paginate.page,
+    return render_template('recipe_list_all.html', recipes=pagination_recipes, page=paginate.page,
+                           per_page=paginate.per_page, pagination=pagination)
+
+
+@app.route('/recipes/<string:username>/')
+@login_required
+def recipe_list_user(username):
+    recipe = Recipe(url_get_post=f'https://recipes-cookbook-api.herokuapp.com/api/recipes/?author__username={username}')
+    response = recipe.get()
+    recipes = response.json()
+    paginate = Paginate(recipes, 'bootstrap4')
+    pagination_recipes = paginate.get_data()
+    pagination = paginate.pagination()
+    return render_template('recipe_list_user.html', recipes=pagination_recipes, page=paginate.page,
                            per_page=paginate.per_page, pagination=pagination)
 
 
@@ -57,6 +73,7 @@ def login():
         response = requests.post('https://recipes-cookbook-api.herokuapp.com/api/auth/', json=payload)
         user_token = response.json().get('token', None)
         session['user_token'] = user_token
+        session['username'] = form.username.data
         if session['user_token'] is None:
             flash('Invalid username or password.', 'error')
         next_page = request.args.get('next')
@@ -68,7 +85,9 @@ def login():
 def logout():
     if request.method == 'POST':
         g.user_token = None
+        g.username = None
         session['user_token'] = None
+        session['username'] = None
         return redirect('/recipes/')
     return render_template('logout.html')
 
