@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>Edit Recipe</title>
+{% endblock head %}
+{% block content %}
+    {% if form.errors %}
+        <ul class="errors">
+            {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+                {% for error in field_errors %}
+                    <li>{{ form[field_name].label }}: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        {{ form.name.label }} {{ form.name(class_="form-control", value=form.name.data) }}
+        <div class="mt-2" data-toggle="fieldset" id="ingredients-fieldset">
+            <button class="btn btn-success" type="button" data-toggle="fieldset-add-row"
+                    data-target="#ingredients-fieldset">+
+            </button>
+            <span>Add ingredient</span>
+            <ul id="ingredients">
+            {% for ingredient in form.ingredients %}
+{#                                {% set outer_loop = loop %}#}
+{#            {% for ingredient_data in recipe.ingredients %}#}
+{#                    {% if loop.index0 <= recipe.ingredients|length %}#}
+{#                        {% set xd = recipe.ingredients|length - 1%}#}
+{#                    {% else %}#}
+{#                        {% set xd = loop.index0 %}#}
+{#                    {% endif %}#}
+{#                    {{ recipe.ingredients[loop.index0].food.name }}#}
+                        <div class="form-row" data-toggle="fieldset-entry">
+                                <input type="hidden" id="ingredients-{{ loop.index0 }}"
+                                       name="ingredients-{{ loop.index0 }}">
+                                    {{ ingredient.unit(class_="form-control m-2 col select-field", value=ingredient.unit.data) }}
+                                    {{ ingredient.amount(class_="form-control m-2 col",
+                                placeholder="Amount", value=ingredient.amount.data) }}
+                                {% for food in ingredient.food %}
+                                        {{ food(class_="form-control m-2 col", placeholder="Name", value=ingredient.food.data.name) }}
+                                {% endfor %}
+                                <button class="btn btn-danger m-2" type="button" data-toggle="fieldset-remove-row"
+                                        id="ingredients-{{ loop.index0 }}-remove">-
+                                </button>
+                            </div>
+                    {% endfor %}
+{#                {% endfor %}#}
+            </ul>
+        </div>
+        <div data-toggle="fieldset" id="steps-fieldset">
+            <button class="btn btn-success" type="button" data-toggle="fieldset-add-row" data-target="#steps-fieldset">
+                +
+            </button>
+            <label>Add step</label>
+            <ul id="steps">
+{#            {% for step_data in recipe.steps %}#}
+                {% for step in form.steps %}
+                    <div class="form-row" data-toggle="fieldset-entry">
+                            <input type="hidden" id="steps-{{ loop.index0 }}" name="steps-{{ loop.index0 }}">
+                                {{ step.instruction(class_="form-control m-2 col", placeholder="Instruction", value=step.instruction.data) }}
+                            <button class="btn btn-danger m-2" type="button" data-toggle="fieldset-remove-row"
+                                    id="steps-{{ loop.index0 }}-remove">-
+                            </button>
+                    </div>
+                    {% endfor %}
+{#                {% endfor %}#}
+            </ul>
+        </div>
+        <div class="form-group">
+            {{ form.image.label }}
+            <div class="custom-file">
+                {{ form.image(class_="custom-file-input", id="validatedCustomFile") }}
+                {% set recipe_image_name = form.image.data.split('/') %}
+                <label class="custom-file-label" for="validatedCustomFile">{{ recipe_image_name[-1] }}</label>
+                <div class="invalid-feedback">Example invalid custom file feedback</div>
+            </div>
+        </div>
+        <div class="form-group">
+            {{ form.description.label }} {{ form.description(class_="form-control", id="description", value=form.description.data) }}
+        </div>
+        <div class="form-group">
+            {{ form.portions.label }} {{ form.portions(class_="form-control", id="portions", value=form.portions.data) }}
+        </div>
+        <div class="form-group">
+            {{ form.preparation_time.label }} {{ form.preparation_time(class_="form-control", id="preparation-time", value=form.preparation_time.data) }}
+        </div>
+        <div class="form-group">
+            {{ form.difficulty.label }} {{ form.difficulty(class_="form-control", id="difficulty", value=form.difficulty.data) }}
+        </div>
+        <button class="btn btn-primary mt-2" type="submit">Add recipe</button>
+    </form>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/fieldset.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/custom_file_label.js') }}"></script>
+    <script>
+    var els = document.getElementsByClassName("select-field");
+    for (i = 0; i < els.length; i++) {
+        els[i].value = els[i].getAttribute('value');
+    }
+</script>
+{% endblock content %}
