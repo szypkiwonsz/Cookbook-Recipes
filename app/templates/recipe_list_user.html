@@ -5,7 +5,7 @@
 {% endblock head %}
 {% block content %}
     {% for recipe in recipes %}
-        {#        {{ loop.index + (page - 1) * per_page }}#}
+        {#{{ loop.index + (page - 1) * per_page }}#}
         <div class="row">
             <div class="col-lg-3 col-md-4" id="image-center">
                 <img src="{{ recipe.image }}" alt="Picture of the dish">
@@ -43,6 +43,10 @@
                 {% endfor %}
             </div>
         </div>
+        {% if recipe.author.username == g.username %}
+            <a href="{{ url_for('recipe_edit', username=g.username, pk=recipe.id) }}" class="btn btn-info"
+               role="button">Edytuj</a>
+        {% endif %}
         <hr class="hr-recipes">
     {% endfor %}
     {{ pagination.links }}
