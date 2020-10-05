@@ -38,15 +38,28 @@ class Recipe:
 
     @staticmethod
     def get_id_post(response_post):
-        """A helper function for "patch_image()" getting the id of the added recipe."""
+        # A helper function for "patch_image()" getting the id of the added recipe.
         id_post = response_post.json()['id']
         return id_post
 
     def add_new(self, data, files):
-        """Function adding a new recipe, first add a recipe then update its picture."""
+        # Function adding a new recipe, first add a recipe then update its picture.
         response = self.post(data)
         id_post_recipe = self.get_id_post(response)
         self.patch_image(id_post_recipe, files)
+
+    def patch(self, payload):
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': f'Token {self.api_token}'
+        }
+        response = requests.patch(self.url_get_post, headers=headers, json=payload)
+        return response
+
+    def edit(self, data, files, recipe_id):
+        self.patch(data)
+        self.patch_image(recipe_id, files)
 
     @staticmethod
     def get_form_data(form, image_path):
