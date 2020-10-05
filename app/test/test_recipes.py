@@ -7,7 +7,7 @@ from recipes import *
 class TestRecipeClass(unittest.TestCase):
 
     def setUp(self):
-        self.recipe = Recipe(url_get_post='https://recipes-cookbook-api.herokuapp.com/api/recipes/',
+        self.recipe = Recipe(api_url='https://recipes-cookbook-api.herokuapp.com/api/recipes/',
                              api_token='7863a78eadb90301bb98c7d4d06cbe497d92b756')
 
     def test_get(self):

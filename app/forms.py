@@ -22,7 +22,7 @@ class NoLabelMixin(object):
 
 
 class FoodAddForm(NoLabelMixin, MyForm):
-    # used NoLabelMixin class due to a field and label display error
+    """Used NoLabelMixin class due to a field and label display error."""
     name = StringField('Name', validators=[DataRequired(), Length(min=3, max=20)])
 
 

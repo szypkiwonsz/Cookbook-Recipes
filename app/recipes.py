@@ -5,18 +5,18 @@ import requests
 
 class Recipe:
 
-    def __init__(self, url_get_post, api_token=None):
+    def __init__(self, api_url, api_token=None):
         """
         Class containing functions that work on api with recipes.
 
-        :param url_get_post: <string> -> url for get and post method
+        :param api_url: <string> -> url for get and post method
         :param api_token: <string> -> api token
         """
-        self.url_get_post = url_get_post
+        self.api_url = api_url
         self.api_token = api_token
 
     def get(self):
-        response = requests.get(self.url_get_post)
+        response = requests.get(url=self.api_url)
         return response
 
     def post(self, payload):
@@ -25,28 +25,8 @@ class Recipe:
             'Accept': 'application/json',
             'Authorization': f'Token {self.api_token}'
         }
-        response = requests.post(self.url_get_post, headers=headers, json=payload)
+        response = requests.post(url=self.api_url, headers=headers, json=payload)
         return response
-
-    def patch_image(self, recipe_id, files):
-        headers = {
-            'Authorization': f'Token {self.api_token}'
-        }
-        url_patch = f'{self.url_get_post}{recipe_id}/'
-        response = requests.patch(url_patch, files=files, headers=headers)
-        return response
-
-    @staticmethod
-    def get_id_post(response_post):
-        # A helper function for "patch_image()" getting the id of the added recipe.
-        id_post = response_post.json()['id']
-        return id_post
-
-    def add_new(self, data, files):
-        # Function adding a new recipe, first add a recipe then update its picture.
-        response = self.post(data)
-        id_post_recipe = self.get_id_post(response)
-        self.patch_image(id_post_recipe, files)
 
     def patch(self, payload):
         headers = {
@@ -54,10 +34,32 @@ class Recipe:
             'Accept': 'application/json',
             'Authorization': f'Token {self.api_token}'
         }
-        response = requests.patch(self.url_get_post, headers=headers, json=payload)
+        response = requests.patch(self.api_url, headers=headers, json=payload)
         return response
 
+    def patch_image(self, recipe_id, files):
+        headers = {
+            'Authorization': f'Token {self.api_token}'
+        }
+        patch_url = f'{self.api_url}{recipe_id}/'
+        response = requests.patch(patch_url, files=files, headers=headers)
+        return response
+
+    @staticmethod
+    def get_id_post(response_post):
+        # a helper function for "add new()" getting the id of the added recipe
+        response_data = response_post.json()
+        post_id = response_data['id']
+        return post_id
+
+    def add_new(self, data, files):
+        # function adding a new recipe, first add a recipe then update its picture
+        response = self.post(data)
+        recipe_id = self.get_id_post(response)
+        self.patch_image(recipe_id, files)
+
     def edit(self, data, files, recipe_id):
+        # function editing an existing recipe, first patch data then image if needed
         self.patch(data)
         self.patch_image(recipe_id, files)
 
