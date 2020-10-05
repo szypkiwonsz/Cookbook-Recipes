@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-Improvements to the appearance of fields{% block nav_recipe_add %}active{% endblock %}
+{% block nav_recipe_add %}active{% endblock %}
 {% block head %}
     <title>Add Recipe</title>
 {% endblock head %}
@@ -23,26 +23,18 @@ Improvements to the appearance of fields{% block nav_recipe_add %}active{% endbl
             <span>Add ingredient</span>
             <ul id="ingredients">
                 {% for ingredient in form.ingredients %}
-                    <div data-toggle="fieldset-entry">
-                        <div class="form-row">
-                            <input type="hidden" id="ingredients-{{ loop.index0 }}"
-                                   name="ingredients-{{ loop.index0 }}">
-                            <div class="col">
-                                {{ ingredient.unit(class_="form-control mt-2") }}
-                            </div>
-                            <div class="col">
-                                {{ ingredient.amount(class_="form-control mt-2",
+                    <div class="form-row" data-toggle="fieldset-entry">
+                        <input type="hidden" id="ingredients-{{ loop.index0 }}"
+                               name="ingredients-{{ loop.index0 }}">
+                        {{ ingredient.unit(class_="form-control m-2 col") }}
+                        {{ ingredient.amount(class_="form-control m-2 col",
                                 placeholder="Amount") }}
-                            </div>
-                            {% for food in ingredient.food %}
-                                <div class="col">
-                                    {{ food(class_="form-control mt-2", placeholder="Name") }}
-                                </div>
-                            {% endfor %}
-                            <button class="btn btn-danger mt-2" type="button" data-toggle="fieldset-remove-row"
-                                    id="ingredients-{{ loop.index0 }}-remove">-
-                            </button>
-                        </div>
+                        {% for food in ingredient.food %}
+                            {{ food(class_="form-control m-2 col", placeholder="Name") }}
+                        {% endfor %}
+                        <button class="btn btn-danger m-2" type="button" data-toggle="fieldset-remove-row"
+                                id="ingredients-{{ loop.index0 }}-remove">-
+                        </button>
                     </div>
                 {% endfor %}
             </ul>
@@ -54,16 +46,12 @@ Improvements to the appearance of fields{% block nav_recipe_add %}active{% endbl
             <label>Add step</label>
             <ul id="steps">
                 {% for step in form.steps %}
-                    <div data-toggle="fieldset-entry">
-                        <div class="form-row">
-                            <input type="hidden" id="steps-{{ loop.index0 }}" name="steps-{{ loop.index0 }}">
-                            <div class="col">
-                                {{ step.instruction(class_="form-control mt-2", placeholder="Instruction") }}
-                            </div>
-                            <button class="btn btn-danger mt-2" type="button" data-toggle="fieldset-remove-row"
-                                    id="steps-{{ loop.index0 }}-remove">-
-                            </button>
-                        </div>
+                    <div class="form-row" data-toggle="fieldset-entry">
+                        <input type="hidden" id="steps-{{ loop.index0 }}" name="steps-{{ loop.index0 }}">
+                        {{ step.instruction(class_="form-control m-2 col", placeholder="Instruction") }}
+                        <button class="btn btn-danger m-2" type="button" data-toggle="fieldset-remove-row"
+                                id="steps-{{ loop.index0 }}-remove">-
+                        </button>
                     </div>
                 {% endfor %}
             </ul>
