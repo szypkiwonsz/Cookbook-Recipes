@@ -46,6 +46,9 @@ class TestRecipesRoutes(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assert_template_used('register.html')
 
+    def test_recipe_edit_url(self):
+        pass
+
 
 if __name__ == "__main__":
     unittest.main()
