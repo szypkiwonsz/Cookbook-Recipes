@@ -63,6 +63,18 @@ def recipe_delete(username, pk):
     return render_template('recipe_delete.html')
 
 
+@app.route('/recipes/<int:pk>/')
+def recipe_detail(pk):
+    recipe = Recipe(api_url=f'https://recipes-cookbook-api.herokuapp.com/api/recipes/{pk}/')
+    response = recipe.get()
+    if response.status_code == 200:
+        recipe = response.json()
+    else:
+        recipe = None
+        abort(404)
+    return render_template('recipe_detail.html', recipe=recipe)
+
+
 @app.route('/recipes/<string:username>/<int:pk>/edit/', methods=['GET', 'POST', 'PATCH'])
 @login_required
 def recipe_edit(username, pk):
