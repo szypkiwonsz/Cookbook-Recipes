@@ -52,6 +52,9 @@ class TestRecipesRoutes(TestCase):
     def test_recipe_delete_url(self):
         pass
 
+    def test_recipe_detail_url(self):
+        pass
+
 
 if __name__ == "__main__":
     unittest.main()
