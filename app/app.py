@@ -46,7 +46,24 @@ def recipe_list_user(username):
                            per_page=paginate.per_page, pagination=pagination)
 
 
-@app.route('/recipes/<string:username>/<int:pk>/edit', methods=['GET', 'POST', 'PATCH'])
+@app.route('/recipes/<string:username>/<int:pk>/delete/', methods=['GET', 'POST', 'DELETE'])
+@login_required
+def recipe_delete(username, pk):
+    recipe = Recipe(
+        api_url=f'https://recipes-cookbook-api.herokuapp.com/api/recipes/{pk}/?author__username={username}',
+        api_token=g.user_token
+    )
+    response = recipe.get()
+    if response.status_code == 404 or username != g.username:
+        abort(404)
+    if request.method == 'POST':
+        recipe.delete()
+        flash('Successfully deleted recipe.')
+        return redirect(f'/recipes/{username}/')
+    return render_template('recipe_delete.html')
+
+
+@app.route('/recipes/<string:username>/<int:pk>/edit/', methods=['GET', 'POST', 'PATCH'])
 @login_required
 def recipe_edit(username, pk):
     """!!!"""
