@@ -43,6 +43,7 @@
                 {% endfor %}
             </div>
         </div>
+        <a href="{{ url_for('recipe_detail', pk=recipe.id) }}" class="btn btn-warning" role="button">Show</a>
         <hr class="hr-recipes">
     {% endfor %}
     {{ pagination.links }}
