@@ -45,7 +45,9 @@
         </div>
         {% if recipe.author.username == g.username %}
             <a href="{{ url_for('recipe_edit', username=g.username, pk=recipe.id) }}" class="btn btn-info"
-               role="button">Edytuj</a>
+               role="button">Edit</a>
+            <a href="{{ url_for('recipe_delete', username=g.username, pk=recipe.id) }}" class="btn btn-danger"
+               role="button">Delete</a>
         {% endif %}
         <hr class="hr-recipes">
     {% endfor %}

@@ -37,6 +37,13 @@ class Recipe:
         response = requests.patch(self.api_url, headers=headers, json=payload)
         return response
 
+    def delete(self):
+        headers = {
+            'Authorization': f'Token {self.api_token}'
+        }
+        response = requests.delete(self.api_url, headers=headers)
+        return response
+
     def patch_image(self, recipe_id, files):
         headers = {
             'Authorization': f'Token {self.api_token}'
