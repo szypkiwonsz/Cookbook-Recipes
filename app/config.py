@@ -9,6 +9,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(32)
 app.config['UPLOADED_IMAGES_DEST'] = 'app/media/recipe_images'
 
+DEFAULT_RECIPE_IMAGE_PATH = 'app/media/default.png'
+
 # Configuration of images
 images = UploadSet('images', IMAGES)
 configure_uploads(app, images)
