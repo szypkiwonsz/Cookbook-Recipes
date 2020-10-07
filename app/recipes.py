@@ -44,11 +44,10 @@ class Recipe:
         response = requests.delete(self.api_url, headers=headers)
         return response
 
-    def patch_image(self, recipe_id, files):
+    def patch_image(self, patch_url, files):
         headers = {
             'Authorization': f'Token {self.api_token}'
         }
-        patch_url = f'{self.api_url}{recipe_id}/'
         response = requests.patch(patch_url, files=files, headers=headers)
         return response
 
@@ -63,12 +62,14 @@ class Recipe:
         # function adding a new recipe, first add a recipe then update its picture
         response = self.post(data)
         recipe_id = self.get_id_post(response)
-        self.patch_image(recipe_id, files)
+        patch_url = f'{self.api_url}{recipe_id}/'
+        self.patch_image(patch_url, files)
 
-    def edit(self, data, files, recipe_id):
+    def edit(self, data, files):
         # function editing an existing recipe, first patch data then image if needed
         self.patch(data)
-        self.patch_image(recipe_id, files)
+        patch_url = self.api_url
+        self.patch_image(patch_url, files)
 
     @staticmethod
     def get_form_data(form, image_path):
@@ -81,7 +82,11 @@ class Recipe:
             'preparation_time': form.preparation_time.data,
             'difficulty': form.difficulty.data
         }
-        files = {
-            'image': (os.path.basename(image_path), open(image_path, 'rb'), 'application/octet-stream')
-        }
+        if image_path:
+            files = {
+                'image': (os.path.basename(image_path), open(image_path, 'rb'), 'application/octet-stream')
+            }
+        else:
+            # for edit page -> if the file path does not exist, leave the current image
+            files = None
         return payload, files
