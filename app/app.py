@@ -1,12 +1,20 @@
+import os
+
 import requests
 from flask import render_template, redirect, session, g, request, flash, abort
 from flask_uploads import UploadNotAllowed
 
-from config import app, images
+from config import app, images, DEFAULT_RECIPE_IMAGE_PATH
 from decorators import login_required
 from forms import RecipeAddForm, LoginForm, RegisterForm
 from recipes import Recipe
 from utils import Paginate
+
+
+def delete_image_file(image_file, image_path):
+    image_file.close()
+    if image_path != DEFAULT_RECIPE_IMAGE_PATH:
+        os.remove(image_path)
 
 
 @app.before_request
@@ -92,20 +100,19 @@ def recipe_edit(username, pk):
     form = RecipeAddForm(data=recipe_to_edit)
     if form.validate_on_submit():
         try:
-            if form.image.data != 'app/media/default.png':
+            if form.image.data != DEFAULT_RECIPE_IMAGE_PATH:
                 # if the user has uploaded a picture file
                 image = images.save(form.image.data)
                 image_path = f'app/media/recipe_images/{image}'
             else:
-                # form.image.data by default is 'app/media/default.png'
-                image_path = 'app/media/default.png'
+                # set image_path to None so as not to alter the image
+                image_path = None
         except UploadNotAllowed:
             # if the user uploaded a file that is not a picture
             flash('Incorrect picture format', 'error')
         else:
             recipe_data, recipe_files = recipe.get_form_data(form, image_path)
-            recipe_id = recipe_to_edit['id']
-            recipe.edit(recipe_data, recipe_files, recipe_id)
+            recipe.edit(recipe_data, recipe_files)
             return redirect('/recipes/')
     return render_template('recipe_edit.html', form=form)
 
@@ -117,13 +124,13 @@ def recipe_add():
     form = RecipeAddForm()
     if form.validate_on_submit():
         try:
-            if form.image.data != 'app/media/default.png':
+            if form.image.data != DEFAULT_RECIPE_IMAGE_PATH:
                 # if the user has uploaded a picture file
                 image = images.save(form.image.data)
                 image_path = f'app/media/recipe_images/{image}'
             else:
                 # form.image.data by default is 'app/media/default.png'
-                image_path = 'app/media/default.png'
+                image_path = DEFAULT_RECIPE_IMAGE_PATH
         except UploadNotAllowed:
             # if the user uploaded a file that is not a picture
             flash('Incorrect picture format', 'error')
@@ -134,6 +141,8 @@ def recipe_add():
             )
             recipe_data, recipe_files = recipe.get_form_data(form, image_path)
             recipe.add_new(recipe_data, recipe_files)
+            image_file = recipe_files['image'][1]
+            delete_image_file(image_file, image_path)
             return redirect('/recipes/')
     return render_template('recipe_add.html', form=form)
 
