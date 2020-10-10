@@ -4,47 +4,34 @@
     <title>Recipes</title>
 {% endblock head %}
 {% block content %}
-    {% for recipe in recipes %}
+    {% for recipe_row in recipes|batch(2) %}
         {#{{ loop.index + (page - 1) * per_page }}#}
         <div class="row">
-            <div class="col-lg-3 col-md-4" id="image-center">
-                <img src="{{ recipe.image }}" alt="Picture of the dish">
-            </div>
-            <div class="col-lg-6 col-md-4">
-                <h1>{{ recipe.name }}</h1>
-            </div>
-            <div class="col-lg-3 col-md-4">
-                <p class="bottom-align-text">{{ recipe.description }}</p>
-            </div>
+            {% for recipe in recipe_row %}
+                <div class="col-lg-6 pt-1 hover" onclick="myhref({{ recipe.id }});">
+                    <div class="col-lg-4 col-md-2 left" id="image-center">
+                        <img class="rounded-circle border border-muted p-1" src="{{ recipe.image }}"
+                             alt="Picture of the dish">
+                    </div>
+                    <div class="col-lg-8 col-md-6 right">
+                        <h5 class="bg-dark p-1 text-center mt-5">{{ recipe.name }}</h5>
+                        <p class="text-dark mt-5"><img src="../static/open-iconic-master/png/clock-3x.png"
+                                                       class="recipe-icon" alt="clock"> {{ recipe.preparation_time }}
+                            minutes <img src="../static/open-iconic-master/png/shield-3x.png" class="recipe-icon"
+                                         alt="shield"> {{ recipe.difficulty }} <img
+                                    src="../static/open-iconic-master/png/star-3x.png" class="recipe-icon"
+                                    alt="star"> {{ recipe.rating }}
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-        <hr>
-        <div class="row">
-            <div class="col-lg-3 col-md-4">
-                <p>Portions: {{ recipe.portions }}</p>
-                <p>Preparation time: {{ recipe.preparation_time }} minutes</p>
-                <p>Difficulty: {{ recipe.difficulty }}</p>
-                {% if recipe.rating %}
-                    <p>Rating: {{ recipe.rating }}</p>
-                {% else %}
-                    <p>Rating: N/A</p>
-                {% endif %}
-                <hr>
-                {% for ingredient in recipe.ingredients %}
-                    {% if ingredient.unit == 'GRAM' %}
-                        <p>{{ ingredient.amount }} gram of {{ ingredient.food.name }}</p>
-                    {% else %}
-                        <p>{{ ingredient.amount }} {{ ingredient.food.name }}</p>
-                    {% endif %}
-                {% endfor %}
-            </div>
-            <div class="col-lg-9 col-md-8">
-                {% for step in recipe.steps %}
-                    <p>{{ step.instruction }}</p>
-                {% endfor %}
-            </div>
-        </div>
-        <a href="{{ url_for('recipe_detail', pk=recipe.id) }}" class="btn btn-warning" role="button">Show</a>
         <hr class="hr-recipes">
     {% endfor %}
     {{ pagination.links }}
+    <script type="text/javascript">
+        function myhref(web) {
+            window.location.href = web;
+        }
+    </script>
 {% endblock content %}
