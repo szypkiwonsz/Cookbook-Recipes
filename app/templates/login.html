@@ -14,9 +14,9 @@
         </ul>
     {% endif %}
     <form class="login-form mb-5 mt-5" method="post">
+        <input type="hidden" value="{{ request.args.get('next', '') }}"/>
         <h3 class="mb-3">Sign In</h3>
         {{ form.hidden_tag() }}
-        <input type="hidden" value="{{ request.args.get('next', '') }}"/>
         {{ form.username(class_='form-control mb-3', placeholder='Your Username *') }}
         {{ form.password(class_='form-control', placeholder='Your Password *') }}
         <div class="col text-center">
