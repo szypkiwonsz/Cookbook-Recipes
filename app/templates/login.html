@@ -5,7 +5,7 @@
 {% endblock head %}
 {% block content %}
     {% if form.errors %}
-        <ul class="errors">
+        <ul class="errors text-dark">
             {% for field_name, field_errors in form.errors|dictsort if field_errors %}
                 {% for error in field_errors %}
                     <li>{{ form[field_name].label }}: {{ error }}</li>
@@ -13,7 +13,7 @@
             {% endfor %}
         </ul>
     {% endif %}
-    <form class="login-form mb-5 mt-5" method="post">
+    <form class="auth-form mb-5 mt-5" method="post">
         <input type="hidden" value="{{ request.args.get('next', '') }}"/>
         <h3 class="mb-3">Sign In</h3>
         {{ form.hidden_tag() }}
