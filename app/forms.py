@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, FileField, FieldList, FormField, IntegerField, SelectField, PasswordField
 from wtforms.fields.html5 import EmailField
-from wtforms.validators import Length, DataRequired, Email, EqualTo
+from wtforms.validators import Length, DataRequired, Email, EqualTo, NumberRange
 
 
 class MyForm(FlaskForm):
@@ -29,7 +29,7 @@ class FoodAddForm(NoLabelMixin, MyForm):
 class IngredientAddForm(MyForm):
     food = FormField(FoodAddForm)
     unit = SelectField('Unit', validators=[DataRequired()], choices=['PIECE', 'GRAM'])
-    amount = IntegerField('Amount', validators=[DataRequired()])
+    amount = IntegerField('Amount', validators=[NumberRange(min=1)])
 
 
 class StepAddForm(MyForm):
@@ -42,8 +42,8 @@ class RecipeAddForm(FlaskForm):
     description = StringField('Description', validators=[DataRequired(), Length(min=3, max=500)])
     ingredients = FieldList(FormField(IngredientAddForm), min_entries=1)
     steps = FieldList(FormField(StepAddForm), min_entries=1)
-    portions = IntegerField('Portions', validators=[DataRequired()])
-    preparation_time = IntegerField('Preparation time', validators=[DataRequired()])
+    portions = IntegerField('Portions', validators=[NumberRange(min=1)])
+    preparation_time = IntegerField('Preparation time', validators=[NumberRange(min=1)])
     difficulty = SelectField('Difficulty', validators=[DataRequired()], choices=['EASY', 'MEDIUM', 'HARD'])
 
 
