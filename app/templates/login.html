@@ -4,6 +4,7 @@
     <title>Login</title>
 {% endblock head %}
 {% block content %}
+    <!-- Error messages -->
     {% if form.errors %}
         <ul class="errors text-dark">
             {% for field_name, field_errors in form.errors|dictsort if field_errors %}
@@ -13,6 +14,7 @@
             {% endfor %}
         </ul>
     {% endif %}
+    <!-- End error messages -->
     <form class="auth-form mb-5 mt-5" method="post">
         <input type="hidden" value="{{ request.args.get('next', '') }}"/>
         <h3 class="mb-3">Sign In</h3>
