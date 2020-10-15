@@ -4,8 +4,10 @@
     <title>Logout</title>
 {% endblock head %}
 {% block content %}
-    <form method="post">
-        Are you sure you wanna logout?
-        <button class="btn btn-primary mt-2" type="submit">Confirm</button>
+    <form class="auth-form mb-5 mt-5" method="post">
+        <h3 class="mb-3"> Are you sure you wanna logout?</h3>
+        <div class="col text-center">
+            <button class="btn btn-primary mt-3" type="submit">Confirm</button>
+        </div>
     </form>
 {% endblock content %}
