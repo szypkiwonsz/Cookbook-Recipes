@@ -3,36 +3,57 @@
     <title>Edit Recipe</title>
 {% endblock head %}
 {% block content %}
+    <!-- Error messages -->
     {% if form.errors %}
-        <ul class="errors">
+        <ul class="errors text-dark">
             {% for field_name, field_errors in form.errors|dictsort if field_errors %}
                 {% for error in field_errors %}
-                    <li>{{ form[field_name].label }}: {{ error }}</li>
+                    {% set index = loop.index0 %}
+                    <!-- Error messages for ingredients or steps field -->
+                    {% if field_name == 'ingredients' or field_name == 'steps' %}
+                        {% for key, values in error.items() %}
+                            {% for value in values %}
+                                <!-- Error messages for ingredient food field -->
+                                {% if key == 'food' %}
+                                    {% for error in values.name %}
+                                        <li class="mb-2">{{ field_name[:-1]|capitalize }}-{{ index }} {{ key }} {{ value }}: {{ error }}</li>
+                                    {% endfor %}
+                                {% else %}
+                                    <li class="mb-2">{{ field_name[:-1]|capitalize }}-{{ index }} {{ key }}: {{ value }}</li>
+                                {% endif %}
+                                <!-- End error messages for ingredient food field -->
+                            {% endfor %}
+                        {% endfor %}
+                        <!-- End error messages for ingredients or steps field -->
+                    {% else %}
+                        <li>{{ form[field_name].label }}: {{ error }}</li>
+                    {% endif %}
                 {% endfor %}
             {% endfor %}
         </ul>
     {% endif %}
-    <form method="post" enctype="multipart/form-data">
+    <!-- End error messages -->
+    <form class="recipe-add-form text-dark" method="post" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
+        <h3 class="mb-3">Edit Recipe</h3>
         {{ form.name.label }} {{ form.name(class_="form-control", value=form.name.data) }}
         <div class="mt-2" data-toggle="fieldset" id="ingredients-fieldset">
             <button class="btn btn-success" type="button" data-toggle="fieldset-add-row"
                     data-target="#ingredients-fieldset">+
             </button>
-            <span>Add ingredient</span>
+            <label class="mt-1">Add ingredient</label>
             <ul id="ingredients">
                 {% for ingredient in form.ingredients %}
                     <div class="form-row" data-toggle="fieldset-entry">
                         <input type="hidden" id="ingredients-{{ loop.index0 }}"
                                name="ingredients-{{ loop.index0 }}">
-                        {{ ingredient.unit(class_="form-control m-2 col select-field", value=ingredient.unit.data) }}
-                        {{ ingredient.amount(class_="form-control m-2 col",
-                                placeholder="Amount", value=ingredient.amount.data) }}
+                        {{ ingredient.unit(class_="form-control m-1 col-lg-2 col-md-10 col-sm-10") }}
+                        {{ ingredient.amount(class_="form-control m-1 col-lg-2 col-md-10 col-sm-10",
+                                placeholder="Amount *") }}
                         {% for food in ingredient.food %}
-                            {{ food(class_="form-control m-2 col", placeholder="Name",
-                            value=ingredient.food.data.name) }}
+                            {{ food(class_="form-control m-1 col-xl-11 col-md-10 col-sm-10", placeholder="Name *") }}
                         {% endfor %}
-                        <button class="btn btn-danger m-2" type="button" data-toggle="fieldset-remove-row"
+                        <button class="btn btn-danger m-1" type="button" data-toggle="fieldset-remove-row"
                                 id="ingredients-{{ loop.index0 }}-remove">-
                         </button>
                     </div>
@@ -48,7 +69,8 @@
                 {% for step in form.steps %}
                     <div class="form-row" data-toggle="fieldset-entry">
                         <input type="hidden" id="steps-{{ loop.index0 }}" name="steps-{{ loop.index0 }}">
-                        {{ step.instruction(class_="form-control m-2 col", placeholder="Instruction",
+                        {{ step.instruction(class_="form-control ml-1 mr-1 mt-1 col-xl-11 col-md-10 col-sm-10",
+                        placeholder="Instruction",
                         value=step.instruction.data) }}
                         <button class="btn btn-danger m-2" type="button" data-toggle="fieldset-remove-row"
                                 id="steps-{{ loop.index0 }}-remove">-
