@@ -3,42 +3,54 @@
     <title>Recipe</title>
 {% endblock head %}
 {% block content %}
-        <div class="row">
-            <div class="col-lg-3 col-md-4" id="image-center">
-                <img src="{{ recipe.image }}" alt="Picture of the dish">
-            </div>
-            <div class="col-lg-6 col-md-4">
-                <h1>{{ recipe.name }}</h1>
-            </div>
-            <div class="col-lg-3 col-md-4">
-                <p class="bottom-align-text">{{ recipe.description }}</p>
-            </div>
+    <div class="row text-dark">
+        <div class="col-lg-4 col-md-4 text-center" id="image-detail">
+            <img class="rounded-circle border border-muted p-1 image-detail" src="{{ recipe.image }}"
+                 alt="Picture of the dish">
         </div>
-        <hr>
-        <div class="row">
-            <div class="col-lg-3 col-md-4">
-                <p>Portions: {{ recipe.portions }}</p>
-                <p>Preparation time: {{ recipe.preparation_time }} minutes</p>
-                <p>Difficulty: {{ recipe.difficulty }}</p>
-                {% if recipe.rating %}
-                    <p>Rating: {{ recipe.rating }}</p>
-                {% else %}
-                    <p>Rating: N/A</p>
-                {% endif %}
-                <hr>
+        <div class="col-lg-6 col-md-4 mt-4 ml-4 mr-4">
+            <h1 class="bg-dark p-1 text-center text-white recipe-detail-name">{{ recipe.name }}</h1>
+            <p class="bottom-align-text">{{ recipe.description }}</p>
+            {% if recipe.author.username == g.username %}
+                <a href="{{ url_for('recipe_delete', username=g.username, pk=recipe.id) }}"
+                   class="right mr-1 btn btn-danger"
+                   role="button">Delete</a>
+                <a href="{{ url_for('recipe_edit', username=g.username, pk=recipe.id) }}"
+                   class="right ml-1 btn btn-info"
+                   role="button">Edit</a>
+            {% endif %}
+        </div>
+    </div>
+    <hr>
+    <div class="row text-dark">
+        <div class="col-lg-3 col-md-4">
+            <p>Portions: {{ recipe.portions }}</p>
+            <p>Preparation time: {{ recipe.preparation_time }} minutes</p>
+            <p>Difficulty: {{ recipe.difficulty }}</p>
+            {% if recipe.rating %}
+                <p>Rating: {{ recipe.rating }}</p>
+            {% else %}
+                <p>Rating: N/A</p>
+            {% endif %}
+        </div>
+        <div class="col-lg-9 col-md-8 mt-2">
+            <h3 class="mb-4">Steps</h3>
+            <ul>
+                {% for step in recipe.steps %}
+                    <li><p>{{ step.instruction }}</p></li>
+                {% endfor %}
+            </ul>
+            <hr class="mt-4">
+            <h3 class="mb-4">Ingredients</h3>
+            <ul>
                 {% for ingredient in recipe.ingredients %}
                     {% if ingredient.unit == 'GRAM' %}
-                        <p>{{ ingredient.amount }} gram of {{ ingredient.food.name }}</p>
+                        <li><p>{{ ingredient.amount }} gram of {{ ingredient.food.name }}</p></li>
                     {% else %}
-                        <p>{{ ingredient.amount }} {{ ingredient.food.name }}</p>
+                        <li><p>{{ ingredient.amount }} {{ ingredient.food.name }}</p></li>
                     {% endif %}
                 {% endfor %}
-            </div>
-            <div class="col-lg-9 col-md-8">
-                {% for step in recipe.steps %}
-                    <p>{{ step.instruction }}</p>
-                {% endfor %}
-            </div>
+            </ul>
         </div>
-        <hr class="hr-recipes">
+    </div>
 {% endblock content %}
