@@ -42,11 +42,12 @@ def recipe_list_all():
 
 
 @app.route('/recipes/<string:username>/')
-@login_required
 def recipe_list_user(username):
     recipe = Recipe(api_url=f'https://recipes-cookbook-api.herokuapp.com/api/recipes/?author__username={username}')
     response = recipe.get()
     recipes = response.json()
+    if not recipes:
+        flash('The user does not exist or has no recipes.')
     paginate = Paginate(recipes, 'bootstrap4')
     pagination_recipes = paginate.get_data()
     pagination = paginate.pagination()
@@ -170,6 +171,7 @@ def login():
 
 
 @app.route('/logout/', methods=['GET', 'POST'])
+@login_required
 def logout():
     if request.method == 'POST':
         g.user_token = None
