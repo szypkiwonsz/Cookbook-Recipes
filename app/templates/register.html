@@ -4,8 +4,9 @@
     <title>Register</title>
 {% endblock head %}
 {% block content %}
+    <!-- Error messages -->
     {% if form.errors %}
-        <ul class="errors">
+        <ul class="errors text-dark">
             {% for field_name, field_errors in form.errors|dictsort if field_errors %}
                 {% for error in field_errors %}
                     <li>{{ form[field_name].label }}: {{ error }}</li>
@@ -13,12 +14,16 @@
             {% endfor %}
         </ul>
     {% endif %}
-    <form method="post">
+    <!-- End error messages -->
+    <form method="post" class="auth-form mt-5 mb-5">
+        <h3 class="mb-3">Sign Up</h3>
         {{ form.hidden_tag() }}
-        {{ form.username }}
-        {{ form.email }}
-        {{ form.password }}
-        {{ form.password2 }}
-        <button class="btn btn-primary mt-2" type="submit">Register</button>
+        {{ form.username(class_='form-control mb-3', placeholder='Username *') }}
+        {{ form.email(class_='form-control mb-3', placeholder='E-mail Address *') }}
+        {{ form.password(class_='form-control mb-3', placeholder='Password *') }}
+        {{ form.password2(class_='form-control', placeholder='Confirm Password *') }}
+        <div class="col text-center">
+            <button class="btn btn-primary mt-3" type="submit">Register</button>
+        </div>
     </form>
 {% endblock content %}

@@ -6,16 +6,19 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
           integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/mystyle.css') }}">
     {% block head %}{% endblock head %}
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<!-- Navigation bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-secondary lighten-1 mb-4">
     <div class="container">
         <a class="navbar-brand" href="#">Cookbook</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        <button class="navbar-toggler first-button" type="button" data-toggle="collapse"
+                data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+            <div class="animated-icon1"><span></span><span></span><span></span></div>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
@@ -56,17 +59,28 @@
         </div>
     </div>
 </nav>
-<div class="container">
+<!-- End navigation var -->
+<div class="container text-light pb-2">
+    <!-- Flash messages -->
     {% with messages = get_flashed_messages() %}
         {% if messages %}
-            <ul class=flashes>
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
+            {% for message in messages %}
+                <div class="col text-center">
+                    <h5 class="text-dark border border-danger rounded pt-2 pb-2">{{ message }}</h5>
+                </div>
+            {% endfor %}
         {% endif %}
     {% endwith %}
+    <!-- End flash messages -->
     {% block content %}{% endblock content %}
+    <footer>
+        <div class="text-dark text-center">
+            <hr>
+            <p>
+                2020 © JK Sawicki | Cookbook
+            </p>
+        </div>
+    </footer>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
@@ -77,5 +91,13 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
         integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
         crossorigin="anonymous"></script>
+<script>
+    // Script for navbar hamburger animated icon
+    $(document).ready(function () {
+        $('.first-button').on('click', function () {
+            $('.animated-icon1').toggleClass('open');
+        });
+    });
+</script>
 </body>
 </html>

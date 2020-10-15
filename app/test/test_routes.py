@@ -1,5 +1,7 @@
 import unittest
+from unittest.mock import patch
 
+from flask import g
 from flask_testing import TestCase
 
 from app import app
@@ -29,7 +31,12 @@ class TestRecipesRoutes(TestCase):
         # self.assert_context()
 
     def test_recipe_add_url(self):
-        pass
+        with app.test_client() as c:
+            with c.session_transaction() as session:
+                session['user_token'] = 'test_token'
+                session['username'] = 'test_user'
+            response = c.get('/recipes/add/')
+            self.assertEqual(response.status_code, 200)
 
     def test_login_url(self):
         response = self.client.get('/login/')

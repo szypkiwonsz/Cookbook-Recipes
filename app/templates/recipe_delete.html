@@ -3,8 +3,10 @@
     <title>Delete</title>
 {% endblock head %}
 {% block content %}
-    <form method="post">
-        Are you sure you wanna delete this recipe?
-        <button class="btn btn-primary mt-2" type="submit">Confirm</button>
+    <form class="auth-form mb-5 mt-5" method="post">
+        <h3 class="mb-3">Are you sure you want to delete this recipe?</h3>
+        <div class="col text-center">
+            <button class="btn btn-primary mt-2" type="submit">Confirm</button>
+        </div>
     </form>
 {% endblock content %}
