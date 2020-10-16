@@ -33,10 +33,12 @@ class TestRecipeForms(TestCase):
             'preparation_time': 5,
             'difficulty': 'EASY'
         })
+
         self.assertTrue(form.validate())
 
     def test_recipe_add_form_no_data(self):
         form = RecipeAddForm(data={})
+
         self.assertFalse(form.validate())
         self.assertEqual(len(form.errors), 7)
 
@@ -45,10 +47,12 @@ class TestRecipeForms(TestCase):
             'username': 'username',
             'password': 'password'
         })
+
         self.assertTrue(form.validate())
 
     def test_login_form_no_data(self):
         form = LoginForm(data={})
+
         self.assertFalse(form.validate())
         self.assertEqual(len(form.errors), 2)
 
@@ -59,10 +63,12 @@ class TestRecipeForms(TestCase):
             'password': 'password',
             'password2': 'password'
         })
+
         self.assertTrue(form.validate())
 
     def test_register_form_no_data(self):
         form = RegisterForm(data={})
+
         self.assertFalse(form.validate())
         self.assertEqual(len(form.errors), 4)
 
