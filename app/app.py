@@ -31,8 +31,8 @@ def before_request():
 
 @app.route('/recipes/')
 def recipe_list_all():
-    recipe = Recipe(api_url='https://recipes-cookbook-api.herokuapp.com/api/recipes/')
-    response = recipe.get()
+    r = Recipe(api_url='https://recipes-cookbook-api.herokuapp.com/api/recipes/')
+    response = r.get()
     recipes = response.json()
     paginate = Paginate(recipes, 'bootstrap4')
     pagination_recipes = paginate.get_data(offset=paginate.offset, per_page=paginate.per_page)
@@ -43,10 +43,10 @@ def recipe_list_all():
 
 @app.route('/recipes/<string:username>/')
 def recipe_list_user(username):
-    recipe = Recipe(api_url=f'https://recipes-cookbook-api.herokuapp.com/api/recipes/?author__username={username}')
-    response = recipe.get()
+    r = Recipe(api_url=f'https://recipes-cookbook-api.herokuapp.com/api/recipes/?author__username={username}')
+    response = r.get()
     recipes = response.json()
-    if not recipes:
+    if not recipes and g.username != username:
         flash('The user does not exist or has no recipes.')
     paginate = Paginate(recipes, 'bootstrap4')
     pagination_recipes = paginate.get_data()
@@ -58,15 +58,16 @@ def recipe_list_user(username):
 @app.route('/recipes/<string:username>/<int:pk>/delete/', methods=['GET', 'POST', 'DELETE'])
 @login_required
 def recipe_delete(username, pk):
-    recipe = Recipe(
+    r = Recipe(
         api_url=f'https://recipes-cookbook-api.herokuapp.com/api/recipes/{pk}/?author__username={username}',
         api_token=g.user_token
     )
-    response = recipe.get()
-    if response.status_code == 404 or username != g.username:
+    response = r.get()
+    recipes = response.json()
+    if not recipes or response.status_code == 404 or username != g.username:
         abort(404)
     if request.method == 'POST':
-        recipe.delete()
+        r.delete()
         flash('Successfully deleted recipe.')
         return redirect(f'/recipes/{username}/')
     return render_template('recipe_delete.html')
@@ -74,12 +75,10 @@ def recipe_delete(username, pk):
 
 @app.route('/recipes/<int:pk>/')
 def recipe_detail(pk):
-    recipe = Recipe(api_url=f'https://recipes-cookbook-api.herokuapp.com/api/recipes/{pk}/')
-    response = recipe.get()
-    if response.status_code == 200:
-        recipe = response.json()
-    else:
-        recipe = None
+    r = Recipe(api_url=f'https://recipes-cookbook-api.herokuapp.com/api/recipes/{pk}/')
+    response = r.get()
+    recipe = response.json()
+    if not recipe or response.status_code == 404:
         abort(404)
     return render_template('recipe_detail.html', recipe=recipe)
 
@@ -88,17 +87,15 @@ def recipe_detail(pk):
 @login_required
 def recipe_edit(username, pk):
     """!!!"""
-    recipe = Recipe(
+    r = Recipe(
         api_url=f'https://recipes-cookbook-api.herokuapp.com/api/recipes/{pk}/?author__username={username}',
         api_token=g.user_token
     )
-    response = recipe.get()
-    if response.status_code == 200 and username == g.username:
-        recipe_to_edit = response.json()
-    else:
-        recipe_to_edit = None
+    response = r.get()
+    recipe = response.json()
+    if not recipe or response.status_code == 404 or username != g.username:
         abort(404)
-    form = RecipeAddForm(data=recipe_to_edit)
+    form = RecipeAddForm(data=recipe)
     if form.validate_on_submit():
         try:
             if form.image.data != DEFAULT_RECIPE_IMAGE_PATH:
@@ -136,12 +133,12 @@ def recipe_add():
             # if the user uploaded a file that is not a picture
             flash('Incorrect picture format', 'error')
         else:
-            recipe = Recipe(
+            r = Recipe(
                 api_url='https://recipes-cookbook-api.herokuapp.com/api/recipes/',
                 api_token=g.user_token
             )
-            recipe_data, recipe_files = recipe.get_form_data(form, image_path)
-            recipe.add_new(recipe_data, recipe_files)
+            recipe_data, recipe_files = r.get_form_data(form, image_path)
+            r.add(recipe_data, recipe_files)
             image_file = recipe_files['image'][1]
             delete_image_file(image_file, image_path)
             return redirect('/recipes/')
