@@ -7,72 +7,45 @@ class Recipe:
 
     def __init__(self, api_url, api_token=None):
         """
-        Class containing functions that work on api with recipes.
+        Contains the most important methods for managing recipe.
 
-        :param api_url: <string> -> url for get and post method
+        :param api_url: <string> -> api url
         :param api_token: <string> -> api token
         """
-        self.api_url = api_url
-        self.api_token = api_token
+        self.api = RecipeApi(url=api_url, token=api_token)
+        self.form = RecipeFormData()
 
     def get(self):
-        response = requests.get(url=self.api_url)
-        return response
+        return self.api.get_recipe()
 
-    def post(self, payload):
-        headers = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': f'Token {self.api_token}'
-        }
-        response = requests.post(url=self.api_url, headers=headers, json=payload)
-        return response
-
-    def patch(self, payload):
-        headers = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': f'Token {self.api_token}'
-        }
-        response = requests.patch(self.api_url, headers=headers, json=payload)
-        return response
-
-    def delete(self):
-        headers = {
-            'Authorization': f'Token {self.api_token}'
-        }
-        response = requests.delete(self.api_url, headers=headers)
-        return response
-
-    def patch_image(self, patch_url, files):
-        headers = {
-            'Authorization': f'Token {self.api_token}'
-        }
-        response = requests.patch(patch_url, files=files, headers=headers)
-        return response
-
-    @staticmethod
-    def get_id_post(response_post):
-        # a helper function for "add new()" getting the id of the added recipe
-        response_data = response_post.json()
-        post_id = response_data['id']
-        return post_id
-
-    def add_new(self, data, files):
+    def add(self, data, files):
         # function adding a new recipe, first add a recipe then update its picture
-        response = self.post(data)
-        recipe_id = self.get_id_post(response)
-        patch_url = f'{self.api_url}{recipe_id}/'
-        self.patch_image(patch_url, files)
+        response_post_recipe = self.api.post_recipe(data)
+        recipe_id = self.api.posted_recipe_id(response_post_recipe)
+        patch_url = f'{self.api.url}{recipe_id}/'
+        response_patch_image = self.api.patch_recipe_image(patch_url=patch_url, files=files)
+        return response_post_recipe, response_patch_image
 
     def edit(self, data, files):
         # function editing an existing recipe, first patch data then image if needed
-        self.patch(data)
-        patch_url = self.api_url
-        self.patch_image(patch_url, files)
+        response_patch_recipe = self.api.patch_recipe(data)
+        patch_url = self.api.url
+        response_patch_image = self.api.patch_recipe_image(patch_url=patch_url, files=files)
+        return response_patch_recipe, response_patch_image
 
+    def delete(self):
+        return self.api.delete_recipe()
+
+    def get_form_data(self, form, image_patch):
+        return self.form.get_recipe_form_data(form=form, image_path=image_patch)
+
+
+class RecipeFormData:
+    """
+    Class dealing with extracting data from the add recipe form.
+    """
     @staticmethod
-    def get_form_data(form, image_path):
+    def get_recipe_form_data(form, image_path):
         payload = {
             'ingredients': [ingredient for ingredient in form.ingredients.data],
             "steps": [step for step in form.steps.data],
@@ -90,3 +63,59 @@ class Recipe:
             # for edit page -> if the file path does not exist, leave the current image
             files = None
         return payload, files
+
+
+class RecipeApi:
+
+    def __init__(self, url, token):
+        """
+        Class containing functions that work on api with recipes.
+
+        :param url: <string> -> api url
+        :param token: <string> -> api token
+        """
+        self.url = url
+        self.token = token
+
+    def get_recipe(self):
+        response = requests.get(url=self.url)
+        return response
+
+    @staticmethod
+    def posted_recipe_id(response_post):
+        # a helper function for "add new()" getting the id of the added recipe
+        response_data = response_post.json()
+        posted_recipe_id = response_data.get('id', None)
+        return posted_recipe_id
+
+    def post_recipe(self, payload):
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': f'Token {self.token}'
+        }
+        response = requests.post(url=self.url, headers=headers, json=payload)
+        return response
+
+    def patch_recipe(self, payload):
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': f'Token {self.token}'
+        }
+        response = requests.patch(self.url, headers=headers, json=payload)
+        return response
+
+    def delete_recipe(self):
+        headers = {
+            'Authorization': f'Token {self.token}'
+        }
+        response = requests.delete(self.url, headers=headers)
+        return response
+
+    def patch_recipe_image(self, patch_url, files):
+        headers = {
+            'Authorization': f'Token {self.token}'
+        }
+        response = requests.patch(patch_url, files=files, headers=headers)
+        return response

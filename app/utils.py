@@ -1,4 +1,8 @@
+import os
+
 from flask_paginate import Pagination, get_page_args
+
+from config import DEFAULT_RECIPE_IMAGE_PATH
 
 
 class Paginate:
@@ -20,3 +24,9 @@ class Paginate:
 
     def pagination(self):
         return Pagination(page=self.page, per_page=self.per_page, total=self.total, css_framework=self.css_framework)
+
+
+def delete_image_file(image_file, image_path):
+    image_file.close()
+    if image_path != DEFAULT_RECIPE_IMAGE_PATH:
+        os.remove(image_path)
