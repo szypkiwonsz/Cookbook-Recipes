@@ -1,5 +1,3 @@
-import os
-
 import requests
 from flask import render_template, redirect, session, g, request, flash, abort
 from flask_uploads import UploadNotAllowed
@@ -8,13 +6,7 @@ from config import app, images, DEFAULT_RECIPE_IMAGE_PATH
 from decorators import login_required
 from forms import RecipeAddForm, LoginForm, RegisterForm
 from recipes import Recipe
-from utils import Paginate
-
-
-def delete_image_file(image_file, image_path):
-    image_file.close()
-    if image_path != DEFAULT_RECIPE_IMAGE_PATH:
-        os.remove(image_path)
+from utils import Paginate, delete_image_file
 
 
 @app.before_request
