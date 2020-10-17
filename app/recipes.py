@@ -6,6 +6,12 @@ import requests
 class Recipe:
 
     def __init__(self, api_url, api_token=None):
+        """
+        Contains the most important methods for managing recipe.
+
+        :param api_url: <string> -> api url
+        :param api_token: <string> -> api token
+        """
         self.api = RecipeApi(url=api_url, token=api_token)
         self.form = RecipeFormData()
 
@@ -35,7 +41,9 @@ class Recipe:
 
 
 class RecipeFormData:
-
+    """
+    Class dealing with extracting data from the add recipe form.
+    """
     @staticmethod
     def get_recipe_form_data(form, image_path):
         payload = {
