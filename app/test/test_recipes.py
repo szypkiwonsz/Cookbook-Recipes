@@ -165,16 +165,15 @@ class TestRecipeFormDataClass(unittest.TestCase):
             'difficulty': 'EASY'
         }
 
-    with app.app_context():
-        def test_get_form_data(self):
-            form = RecipeAddForm(data=self.form_data)
-            image_path = '../app/media/default.png'
+    def test_get_form_data(self):
+        form = RecipeAddForm(data=self.form_data)
+        image_path = '../app/media/default.png'
 
-            payload, files = self.r.get_recipe_form_data(form, image_path)
-            files['image'][1].close()
+        payload, files = self.r.get_recipe_form_data(form, image_path)
+        files['image'][1].close()
 
-            self.assertEqual(payload, self.form_data)
-            self.assertEqual(files['image'][0], 'default.png')
+        self.assertEqual(payload, self.form_data)
+        self.assertEqual(files['image'][0], 'default.png')
 
 
 class TestRecipeClass(unittest.TestCase):
