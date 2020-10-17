@@ -4,34 +4,38 @@
     <title>Recipes</title>
 {% endblock head %}
 {% block content %}
-    {% for recipe_row in recipes|batch(2) %}
-        {#{{ loop.index + (page - 1) * per_page }}#}
-        <div class="row">
-            {% for recipe in recipe_row %}
-                <div class="col-lg-6 hover border border-muted rounded"
-                     onclick="window.location.href='{{ url_for( 'recipe_detail', pk=recipe.id ) }}';">
-                    <div class="col-lg-4 col-md-4 left" id="image-center">
-                        <img class="rounded-circle border border-muted p-1 image-list" src="{{ recipe.image }}"
-                             alt="Picture of the dish">
+    {% if recipes %}
+        {% for recipe_row in recipes|batch(2) %}
+            {#{{ loop.index + (page - 1) * per_page }}#}
+            <div class="row">
+                {% for recipe in recipe_row %}
+                    <div class="col-lg-6 hover border border-muted rounded"
+                         onclick="window.location.href='{{ url_for( 'recipe_detail', pk=recipe.id ) }}';">
+                        <div class="col-lg-4 col-md-4 left" id="image-center">
+                            <img class="rounded-circle border border-muted p-1 image-list" src="{{ recipe.image }}"
+                                 alt="Picture of the dish">
+                        </div>
+                        <div class="col-lg-8 col-md-8 right recipe-info">
+                            <h5 class="bg-dark p-1 text-center">{{ recipe.name }}</h5>
+                            <p class="text-dark"><img
+                                    src="{{ url_for('static', filename='icons/clock.png') }}"
+                                    class="recipe-icon" alt="clock"> {{ recipe.preparation_time }}
+                                minutes <img src="{{ url_for('static', filename='icons/shield.png') }}"
+                                             class="recipe-icon"
+                                             alt="shield"> {{ recipe.difficulty }} <img
+                                        src="{{ url_for('static', filename='icons/star.png') }}"
+                                        class="recipe-icon"
+                                        alt="star"> {{ recipe.rating }}
+                            </p>
+                        </div>
                     </div>
-                    <div class="col-lg-8 col-md-8 right recipe-info">
-                        <h5 class="bg-dark p-1 text-center">{{ recipe.name }}</h5>
-                        <p class="text-dark"><img
-                                src="{{ url_for('static', filename='icons/clock.png') }}"
-                                class="recipe-icon" alt="clock"> {{ recipe.preparation_time }}
-                            minutes <img src="{{ url_for('static', filename='icons/shield.png') }}"
-                                         class="recipe-icon"
-                                         alt="shield"> {{ recipe.difficulty }} <img
-                                    src="{{ url_for('static', filename='icons/star.png') }}"
-                                    class="recipe-icon"
-                                    alt="star"> {{ recipe.rating }}
-                        </p>
-                    </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <div class="text-center mt-3">
+            <div class="d-inline-block">{{ pagination.links }}</div>
         </div>
-    {% endfor %}
-    <div class="text-center mt-3">
-        <div class="d-inline-block">{{ pagination.links }}</div>
-    </div>
+    {% else %}
+        <h3 class="mt-5 mb-5 text-center text-dark">No recipes added</h3>
+    {% endif %}
 {% endblock content %}
