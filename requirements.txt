@@ -1,0 +1,8 @@
+email-validator==1.1.1
+Flask==1.1.2
+flask-paginate==0.7.1
+Flask-Reuploaded==0.3.2
+Flask-Testing==0.8.0
+Flask-WTF==0.14.3
+requests==2.24.0
+WTForms==2.3.3
