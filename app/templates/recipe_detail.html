@@ -13,10 +13,10 @@
             <p class="bottom-align-text">{{ recipe.description }}</p>
             {% if recipe.author.username == g.username %}
                 <a href="{{ url_for('recipe_delete', username=g.username, pk=recipe.id) }}"
-                   class="right mr-1 btn btn-danger"
+                   class="right ml-1 btn btn-danger"
                    role="button">Delete</a>
                 <a href="{{ url_for('recipe_edit', username=g.username, pk=recipe.id) }}"
-                   class="right ml-1 btn btn-info"
+                   class="right mr-1 btn btn-info"
                    role="button">Edit</a>
             {% endif %}
         </div>
