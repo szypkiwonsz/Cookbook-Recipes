@@ -186,6 +186,12 @@ class TestRecipesRoutes(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assert_template_used('recipe_detail.html')
 
+    def test_home_page_url(self):
+        response = self.client.get('/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assert_template_used('home_page.html')
+
 
 if __name__ == "__main__":
     unittest.main()
