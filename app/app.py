@@ -33,6 +33,11 @@ def recipe_list_all():
                            per_page=paginate.per_page, pagination=pagination)
 
 
+@app.route('/')
+def home_page():
+    return render_template('home_page.html')
+
+
 @app.route('/recipes/<string:username>/')
 def recipe_list_user(username):
     r = Recipe(api_url=f'https://recipes-cookbook-api.herokuapp.com/api/recipes/?author__username={username}')
