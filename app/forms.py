@@ -28,7 +28,8 @@ class FoodAddForm(NoLabelMixin, MyForm):
 
 class IngredientAddForm(MyForm):
     food = FormField(FoodAddForm)
-    unit = SelectField('Unit', validators=[DataRequired()], choices=['PIECE', 'GRAM'])
+    unit = SelectField('Unit', validators=[DataRequired()], choices=['PIECE', 'GRAM', 'LITER', 'SPOON', 'TEASPOON',
+                                                                     'MILLILITER', 'BUNCH', 'PINCH'])
     amount = IntegerField('Amount', validators=[NumberRange(min=1)])
 
 
