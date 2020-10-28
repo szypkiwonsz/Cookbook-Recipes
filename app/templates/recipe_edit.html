@@ -85,10 +85,12 @@
                 {{ form.image(class_="custom-file-input", id="validatedCustomFile") }}
                 {% if form.image.data is string %}
                     {% set recipe_image_name = form.image.data.split('/') %}
+                    {% set recipe_image_name = recipe_image_name[-1].split('?') %}
                 {% else %}
                     {% set recipe_image_name = form.image.data.filename.split('/') %}
+                    {% set recipe_image_name = recipe_image_name[-1].split('?') %}
                 {% endif %}
-                <label class="custom-file-label" for="validatedCustomFile">{{ recipe_image_name[-1] }}</label>
+                <label class="custom-file-label" for="validatedCustomFile">{{ recipe_image_name[0] }}</label>
                 <div class="invalid-feedback">Example invalid custom file feedback</div>
             </div>
         </div>
