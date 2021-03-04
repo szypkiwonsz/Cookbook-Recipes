@@ -6,11 +6,10 @@ from config import DEFAULT_RECIPE_IMAGE_PATH
 
 
 class Paginate:
+    """Data pagination class."""
 
     def __init__(self, data, css_framework):
         """
-        Data pagination class.
-
         :param data: <list> -> data to be paginated
         :param css_framework: <string> -> name of css framework e.g. "bootstrap4"
         """
@@ -27,6 +26,7 @@ class Paginate:
 
 
 def delete_image_file(image_file, image_path):
+    """Deletes image file from local storage."""
     image_file.close()
     if image_path != DEFAULT_RECIPE_IMAGE_PATH:
         os.remove(image_path)
