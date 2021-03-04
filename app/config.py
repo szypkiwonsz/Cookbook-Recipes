@@ -6,7 +6,7 @@ from flask_uploads import UploadSet, IMAGES, configure_uploads
 # Configuration of app
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.urandom(32)
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 # Configuration of images
 
