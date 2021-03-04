@@ -1,16 +1,17 @@
 import unittest
 from unittest.mock import patch, Mock
 
+import requests
+
 from app import app
 from forms import RecipeAddForm
-from recipes import *
+from recipes import ApiHandler, RecipeFormDataHandler, RecipeManager
 
 
-class TestRecipeApiClass(unittest.TestCase):
+class TestApiHandler(unittest.TestCase):
 
     def setUp(self):
-        self.r = RecipeApi(url='https://recipes-cookbook-api.herokuapp.com/api/recipes/',
-                           token=None)
+        self.api_handler = ApiHandler(token=None)
         self.recipe_data = {
             'id': 48,
             'ingredients': [
@@ -76,6 +77,7 @@ class TestRecipeApiClass(unittest.TestCase):
             'preparation_time': 5,
             'difficulty': 'EASY'
         }
+        self.api_main_url = 'https://recipes-cookbook-api.herokuapp.com/api/recipes/'
         app.app_context().push()
 
     @patch('recipes.requests.get')
@@ -85,7 +87,7 @@ class TestRecipeApiClass(unittest.TestCase):
         mock_get.return_value = Mock(status_code=200)
         mock_get.return_value.json.return_value = recipes
 
-        response = self.r.get_recipe()
+        response = self.api_handler.get_response(self.api_main_url)
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), recipes)
@@ -95,27 +97,17 @@ class TestRecipeApiClass(unittest.TestCase):
         mock_post.return_value = Mock(status_code=200)
         mock_post.return_value.json.return_value = self.payload
 
-        response = self.r.post_recipe(self.payload)
+        response = self.api_handler.post_response(self.api_main_url, self.payload)
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), self.payload)
-
-    @patch('requests.post')
-    def test_get_id_post(self, mock_post):
-        mock_post.return_value = Mock(status_code=200)
-        mock_post.return_value.json.return_value = self.recipe_data
-
-        response = requests.post(url='test_url')
-        post_id = self.r.posted_recipe_id(response)
-
-        self.assertEqual(post_id, self.recipe_data['id'])
 
     @patch('recipes.requests.patch')
     def test_patch(self, mock_patch):
         mock_patch.return_value = Mock(status_code=200)
         mock_patch.return_value.json.return_value = self.payload
 
-        response = self.r.patch_recipe(self.payload)
+        response = self.api_handler.patch_response(f'{self.api_main_url}1/?author__username=test_user', self.payload)
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), self.payload)
@@ -124,28 +116,28 @@ class TestRecipeApiClass(unittest.TestCase):
     def test_delete(self, mock_delete):
         mock_delete.return_value = Mock(status_code=200)
 
-        response = self.r.delete_recipe()
+        response = self.api_handler.delete_response(f'{self.api_main_url}1/')
 
         self.assertEqual(response.status_code, 200)
 
     @patch('recipes.requests.patch')
-    def test_patch_image(self, mock_patch):
-        self.recipe_form = RecipeFormData()
+    def test_patch_files(self, mock_patch):
+        self.recipe_form = RecipeFormDataHandler()
         form = RecipeAddForm(data=self.form_data)
         image_path = '../app/media/default.png'
         mock_patch.return_value = Mock(status_code=200)
 
         _, files = self.recipe_form.get_recipe_form_data(form, image_path)
         files['image'][1].close()
-        response = self.r.patch_recipe_image('patch_to_image', files)
+        response = self.api_handler.patch_files_response('patch_to_image', files)
 
         self.assertEqual(response.status_code, 200)
 
 
-class TestRecipeFormDataClass(unittest.TestCase):
+class TestRecipeFormData(unittest.TestCase):
 
     def setUp(self):
-        self.r = RecipeFormData()
+        self.r = RecipeFormDataHandler()
         self.form_data = {
             'name': 'New recipe',
             'description': 'Nice recipe',
@@ -176,11 +168,10 @@ class TestRecipeFormDataClass(unittest.TestCase):
         self.assertEqual(files['image'][0], 'default.png')
 
 
-class TestRecipeClass(unittest.TestCase):
+class TestRecipeManager(unittest.TestCase):
 
     def setUp(self):
-        self.r = Recipe(api_url='https://recipes-cookbook-api.herokuapp.com/api/recipes/',
-                        api_token=None)
+        self.recipe_manager = RecipeManager(api_token=None)
         self.recipe_data = {
             'id': 48,
             'ingredients': [
@@ -247,13 +238,56 @@ class TestRecipeClass(unittest.TestCase):
             'difficulty': 'EASY'
         }
 
+    @patch('requests.post')
+    def test_posted_recipe_id(self, mock_post):
+        mock_post.return_value = Mock(status_code=200)
+        mock_post.return_value.json.return_value = self.recipe_data
+
+        response = requests.post(url='test_url')
+        post_id = self.recipe_manager.posted_recipe_id(response)
+
+        self.assertEqual(post_id, self.recipe_data['id'])
+
     @patch('recipes.requests.get')
-    def test_get(self, mock_get):
+    def test_get_all_recipes_response(self, mock_get):
         recipes = [self.recipe_data]
         mock_get.return_value = Mock(status_code=200)
         mock_get.return_value.json.return_value = recipes
 
-        response = self.r.get()
+        response = self.recipe_manager.get_all_recipes_response()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), recipes)
+
+    @patch('recipes.requests.get')
+    def test_get_recipe_response(self, mock_get):
+        recipe = self.recipe_data
+        mock_get.return_value = Mock(status_code=200)
+        mock_get.return_value.json.return_value = recipe
+
+        response = self.recipe_manager.get_recipe_response(48)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), recipe)
+
+    @patch('recipes.requests.get')
+    def test_get_user_recipe_response(self, mock_get):
+        recipe = self.recipe_data
+        mock_get.return_value = Mock(status_code=200)
+        mock_get.return_value.json.return_value = recipe
+
+        response = self.recipe_manager.get_user_recipe_response('test_user', 48)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), recipe)
+
+    @patch('recipes.requests.get')
+    def test_get_user_recipes_response(self, mock_get):
+        recipes = [self.recipe_data]
+        mock_get.return_value = Mock(status_code=200)
+        mock_get.return_value.json.return_value = recipes
+
+        response = self.recipe_manager.get_user_recipes_response('test_user')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), recipes)
@@ -262,7 +296,7 @@ class TestRecipeClass(unittest.TestCase):
     @patch('recipes.requests.patch')
     def test_add(self, mock_post, mock_patch):
         form = RecipeAddForm(data=self.form_data)
-        self.recipe_form = RecipeFormData()
+        self.recipe_form = RecipeFormDataHandler()
         image_path = '../app/media/default.png'
         mock_post.return_value.json.return_value = self.recipe_data
         mock_patch.return_value = Mock(status_code=200)
@@ -271,7 +305,7 @@ class TestRecipeClass(unittest.TestCase):
         data, files = self.recipe_form.get_recipe_form_data(form, image_path)
         files['image'][1].close()
 
-        response_post, response_patch = self.r.add(data=data, files=files)
+        response_post, response_patch = self.recipe_manager.add(data=data, files=files)
 
         self.assertEqual(response_post.status_code, 200)
         self.assertEqual(response_patch.status_code, 200)
@@ -279,14 +313,15 @@ class TestRecipeClass(unittest.TestCase):
     @patch('recipes.requests.patch')
     def test_edit(self, mock_patch):
         form = RecipeAddForm(data=self.form_data)
-        self.recipe_form = RecipeFormData()
+        self.recipe_form = RecipeFormDataHandler()
         image_path = '../app/media/default.png'
         mock_patch.return_value = Mock(status_code=200)
 
         data, files = self.recipe_form.get_recipe_form_data(form, image_path)
         files['image'][1].close()
 
-        response_patch_recipe, response_patch_image = self.r.edit(data=self.payload, files=files)
+        response_patch_recipe, response_patch_image = self.recipe_manager.edit(data=self.payload, files=files, pk=1,
+                                                                               username='test_user')
 
         self.assertEqual(response_patch_recipe.status_code, 200)
         self.assertEqual(response_patch_image.status_code, 200)
@@ -295,7 +330,7 @@ class TestRecipeClass(unittest.TestCase):
     def test_delete(self, mock_delete):
         mock_delete.return_value = Mock(status_code=200)
 
-        response = self.r.delete()
+        response = self.recipe_manager.delete(pk=1, username='test_user')
 
         self.assertEqual(response.status_code, 200)
 
@@ -303,7 +338,7 @@ class TestRecipeClass(unittest.TestCase):
         form = RecipeAddForm(data=self.form_data)
         image_path = '../app/media/default.png'
 
-        payload, files = self.r.get_form_data(form, image_path)
+        payload, files = self.recipe_manager.get_form_data(form, image_path)
         files['image'][1].close()
 
         self.assertEqual(payload, self.form_data)

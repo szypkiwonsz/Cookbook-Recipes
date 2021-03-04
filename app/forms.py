@@ -27,6 +27,7 @@ class FoodAddForm(NoLabelMixin, MyForm):
 
 
 class IngredientAddForm(MyForm):
+    """Ingredient form needed for Recipe form."""
     food = FormField(FoodAddForm)
     unit = SelectField('Unit', validators=[DataRequired()], choices=['PIECE', 'GRAM', 'LITER', 'SPOON', 'TEASPOON',
                                                                      'MILLILITER', 'BUNCH', 'PINCH'])
@@ -34,6 +35,7 @@ class IngredientAddForm(MyForm):
 
 
 class StepAddForm(MyForm):
+    """Step form needed for Recipe form."""
     instruction = StringField('Instruction', validators=[DataRequired(), Length(min=3, max=500)])
 
 
