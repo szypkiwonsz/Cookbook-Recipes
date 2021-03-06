@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mystyle.css') }}">
+    {% block head %}{% endblock head %}
+</head>
+<body>
+<!-- Navigation bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-secondary lighten-1 mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('home_page') }}">Cookbook</a>
+        <button class="navbar-toggler first-button" type="button" data-toggle="collapse"
+                data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <div class="animated-icon1"><span></span><span></span><span></span></div>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item {% block nav_recipe_list_all %}{% endblock %}">
+                    <a class="nav-link" href="{{ url_for('recipe_list_all') }}">Recipes</a>
+                </li>
+                <li class="nav-item {% block nav_recipe_add %}{% endblock %}">
+                    <a class="nav-link" href="{{ url_for('recipe_add') }}">Add recipe</a>
+                </li>
+                {% if g.username %}
+                    <li class="nav-item {% block nav_recipe_list_user %}{% endblock %}">
+                        <a class="nav-link" href="{{ url_for('recipe_list_user', username=g.username) }}">My recipes</a>
+                    </li>
+                {% endif %}
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                {% if g.user_token %}
+                    <li class="nav-item {% block nav_logout %}{% endblock %}">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item {% block nav_login %}{% endblock %}">
+                        <a class="nav-link float-right" href="{{ url_for('login') }}">Login</a>
+                    </li>
+                    <li class="nav-item {% block nav_register %}{% endblock %}">
+                        <a class="nav-link float-right" href="{{ url_for('register') }}">Register</a>
+                    </li>
+                {% endif %}
+            </ul>
+            {#            <li class="nav-item">#}
+            {#                <a class="nav-link disabled" href="#">Disabled</a>#}
+            {#            </li>#}
+            {#            </ul>#}
+            {#        <form class="form-inline my-2 my-lg-0">#}
+            {#            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">#}
+            {#            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>#}
+            {#        </form>#}
+        </div>
+    </div>
+</nav>
+<!-- End navigation var -->
+<div class="container text-light pb-2">
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="col text-center">
+                    <h5 class="text-dark border border-danger rounded pt-2 pb-2">{{ message }}</h5>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <!-- End flash messages -->
+    {% block content %}{% endblock content %}
+    <footer>
+        <div class="text-dark text-center">
+            <hr>
+            <p>
+                2020 © JK Sawicki | Cookbook
+            </p>
+        </div>
+    </footer>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+<script>
+    // Script for navbar hamburger animated icon
+    $(document).ready(function () {
+        $('.first-button').on('click', function () {
+            $('.animated-icon1').toggleClass('open');
+        });
+    });
+</script>
+</body>
+</html>

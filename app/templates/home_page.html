@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>Cookbook</title>
+{% endblock head %}
+{% block content %}
+    <div class="jumbotron">
+        <h1 class="mb-5">Cookbook</h1>
+        <div class="home-page-info">
+            <h5 class="mt-5 mb-5">A simple recipe management app.</h5>
+            <h5 class="right">All data is stored
+                in an external api.</h5>
+        </div>
+        <a href="{{ url_for('recipe_list_all') }}" class="btn btn-secondary button-home-page" type="button">Show all
+            recipes</a>
+    </div>
+{% endblock content %}
