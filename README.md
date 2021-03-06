@@ -1,6 +1,8 @@
 # Cookbook-Recipes
 
-A simple web application built in Flask that allows you to manage recipes.
+[**See Project Live Here**](https://recipes-cookbook-flask.herokuapp.com/)
+
+A simple web application built in Flask that allows you to manage recipes. It uses my API to store data.
 
 ## Getting Started
 
